@@ -1,16 +1,19 @@
-from typing import List  # <-- Import List here
-
+"""
+This module contains the sentiment analysis model using BERT.
+"""
+from typing import List
 import torch
 from transformers import BertTokenizer, BertForSequenceClassification
+from backend.config import MODEL_PATH, TOKENIZER_PATH  # Import config values
 
 class SentimentModel:
     def __init__(self):
-        # Load the model and tokenizer from models_store
-        self.model = BertForSequenceClassification.from_pretrained('backend/models_store/final_model')  # Load the fine-tuned model
+        # Load the model and tokenizer using paths from config
+        self.model = BertForSequenceClassification.from_pretrained(MODEL_PATH)  # Load the fine-tuned model
         self.model.eval()  # Set model to evaluation mode
         
         # Load tokenizer from the saved location
-        self.tokenizer = BertTokenizer.from_pretrained('backend/models_store/final_tokenizer')  # Load the tokenizer
+        self.tokenizer = BertTokenizer.from_pretrained(TOKENIZER_PATH)  # Load the tokenizer
 
     def batch_predict(self, texts: List[str]) -> List[str]:
         # Tokenize the input texts
