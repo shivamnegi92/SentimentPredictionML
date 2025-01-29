@@ -3,5 +3,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-MODEL_PATH = os.getenv("MODEL_PATH", "backend/models_store/final_model")  # Default value is set to path in backend
-TOKENIZER_PATH = os.getenv("TOKENIZER_PATH", "backend/models_store/final_tokenizer")  # Tokenizer path
+# Update paths to point to the directories
+MODEL_PATH = os.getenv("MODEL_PATH", 
+                       "backend/models_store/final_model")  # Path to the model directory
+TOKENIZER_PATH = os.getenv("TOKENIZER_PATH", 
+                           "backend/models_store/final_tokenizer")  # Path to the tokenizer directory

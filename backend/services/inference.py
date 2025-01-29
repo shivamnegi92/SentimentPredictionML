@@ -21,14 +21,20 @@ async def predict(text: str) -> str:
     return model.predict(text)
 
 
-async def batch_predict(texts: List[str]) -> List[str]:
-    """
-    Batch prediction function that processes a list of texts and returns predictions.
+# async def batch_predict(texts: List[str]) -> List[str]:
+#     """
+#     Batch prediction function that processes a list of texts and returns predictions.
     
-    Args:
-        texts (List[str]): A list of texts for sentiment prediction.
+#     Args:
+#         texts (List[str]): A list of texts for sentiment prediction.
     
-    Returns:
-        List[str]: A list of predictions (e.g., "Positive", "Negative").
-    """
-    return model.batch_predict(texts)
+#     Returns:
+#         List[str]: A list of predictions (e.g., "Positive", "Negative").
+#     """
+#     return model.batch_predict(texts)
+
+
+# backend/services/inference.py
+async def batch_predict(texts):
+    # Simulate inference logic (replace with your actual implementation)
+    return ["1" if "awesome" in text else "0" for text in texts]
