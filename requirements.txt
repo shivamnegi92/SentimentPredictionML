@@ -1,0 +1,15 @@
+fastapi
+streamlit
+torch
+pytest
+python-multipart
+uvicorn  # for running FastAPI
+numpy
+pandas
+transformers
+scikit-learn
+python-dotenv
+datasets
+mlflow
+accelerate
+tensorboard
