@@ -4,3 +4,5 @@ logs/
 results/
 *.json
 mlruns/
+*.pyc
+__pycache__/
