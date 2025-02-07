@@ -1,5 +1,12 @@
 # Sentiment Prediction API
 
+## CI-CD Failure: Missing Model and Tokenizer in `model_store`
+
+**Important:** Our CI-CD pipeline is currently failing because the model and tokenizer required by the FastAPI backend are missing from the `model_store` folder.  This is due to file size limitations.
+
+The model and tokenizer are generated within the notebook and saved in the `final_tokenizer` and `final_model` folders, respectively.  Currently, these files need to be *manually* moved to the `model_store` folder in the backend repository to resolve the CI-CD failure.  This manual step is a temporary workaround.
+
+
 This project provides an API for sentiment analysis using a pre-trained model.
 
 ## Endpoints
