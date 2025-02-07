@@ -3,50 +3,50 @@ name: CI Pipeline
 on:
   push:
     branches:
-      - main  # Trigger the workflow when there are pushes to the main branch
+      - main
   pull_request:
     branches:
-      - main  # Trigger the workflow when there's a pull request to the main branch
+      - main
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # The CI/CD runner that will execute the job
+    runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2  # Checkout the repository code
+      - name: Checkout repository
+        uses: actions/checkout@v4  # Updated to latest version
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4  # Updated to latest version
         with:
-          python-version: '3.9.21'  # Specify Python version
+          python-version: '3.9'  # Use '3.9' instead of '3.9.21' for flexibility
 
       - name: Install dependencies
         run: |
-          python -m venv venv  # Create a virtual environment
+          python -m venv venv
           source venv/bin/activate
-          pip install -r requirements.txt  # Install dependencies from requirements.txt
+          pip install --upgrade pip
+          pip install -r requirements.txt pytest flake8 safety  # Install required tools
 
       - name: Run tests
         run: |
           source venv/bin/activate
-          pytest  # Run tests (ensure you have test files for FastAPI)
+          pytest
 
       - name: Lint code
         run: |
           source venv/bin/activate
-          pip install flake8  # Install flake8 for code linting
-          flake8 .  # Run linting on the entire codebase
+          flake8 .
 
       - name: Check for security vulnerabilities
         run: |
           source venv/bin/activate
-          pip install safety  # Install safety tool for security checks
-          safety check  # Run security vulnerability checks
+          safety check
 
       - name: Notify success
-        run: echo "CI Pipeline executed successfully!"  # Optionally notify when successful
+        if: success()
+        run: echo "✅ CI Pipeline executed successfully!"
 
       - name: Notify failure
-        if: failure()  # Notify on failure
-        run: echo "CI Pipeline failed!"
+        if: failure()
+        run: echo "❌ CI Pipeline failed!"
