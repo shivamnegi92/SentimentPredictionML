@@ -15,5 +15,5 @@ accelerate==0.19.0
 tensorboard==2.11.2
 wandb==0.13.3
 seaborn==0.11.2
-ipykernel==6.12.2
+ipykernel==6.29.5
 safetensors
