@@ -1,7 +1,8 @@
+import os
 import torch
 from transformers import BertTokenizer, BertForSequenceClassification
 from safetensors.torch import load_file
-from backend.config import MODEL_PATH, TOKENIZER_PATH
+from backend.config import MODEL_PATH, TOKENIZER_PATH, HF_MODEL_REPO
 import logging
 
 logger = logging.getLogger(__name__)
@@ -9,12 +10,28 @@ logger = logging.getLogger(__name__)
 class SentimentModel:
     def __init__(self):
         logger.info("Initializing SentimentModel...")
-        self.tokenizer = BertTokenizer.from_pretrained(TOKENIZER_PATH)
-        state_dict = load_file(f"{MODEL_PATH}/model.safetensors")
-        self.model = BertForSequenceClassification.from_pretrained(
-            MODEL_PATH,
-            state_dict=state_dict
-        )
+        
+        # Load or download tokenizer
+        if not os.path.exists(TOKENIZER_PATH):
+            logger.warning("Tokenizer not found locally. Downloading from Hugging Face...")
+            self.tokenizer = BertTokenizer.from_pretrained(HF_MODEL_REPO + "/final_tokenizer")
+            self.tokenizer.save_pretrained(TOKENIZER_PATH)
+        else:
+            self.tokenizer = BertTokenizer.from_pretrained(TOKENIZER_PATH)
+        
+        # Load or download model
+        model_file = f"{MODEL_PATH}/model.safetensors"
+        if not os.path.exists(model_file):
+            logger.warning("Model file not found locally. Downloading from Hugging Face...")
+            self.model = BertForSequenceClassification.from_pretrained(HF_MODEL_REPO + "/final_model")
+            self.model.save_pretrained(MODEL_PATH)
+        else:
+            state_dict = load_file(model_file)
+            self.model = BertForSequenceClassification.from_pretrained(
+                MODEL_PATH,
+                state_dict=state_dict
+            )
+        
         self.model.eval()
         logger.info("SentimentModel initialized successfully")
 

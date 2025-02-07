@@ -1,1 +1,1 @@
-from .config import MODEL_PATH, TOKENIZER_PATH
+from .config import MODEL_PATH, TOKENIZER_PATH, HF_MODEL_REPO
