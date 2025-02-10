@@ -3,9 +3,9 @@ This module contains functions and classes for handling inference
 using the SentimentModel.
 """
 
-from backend.models.sentiment_model import SentimentModel
+from models.sentiment_model import SentimentModel
 from typing import List
-from backend.core.logger import setup_logging
+from core.logger import setup_logging
 import torch
 
 # Load the sentiment model

@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import MagicMock
-from backend.models.sentiment_model import SentimentModel
+from models.sentiment_model import SentimentModel
 
 @pytest.fixture
 def sentiment_model():

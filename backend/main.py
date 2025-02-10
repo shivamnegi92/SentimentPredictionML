@@ -1,8 +1,16 @@
 # backend/main.py
+from dotenv import load_dotenv
+import os
 
 from fastapi import FastAPI
-from backend.api.v1.endpoints import predict, batch_predict, health
-from backend.core.logger import setup_logging
+from api.v1.endpoints import predict, batch_predict, health
+from core.logger import setup_logging
+
+
+load_dotenv()
+print("PYTHONPATH:", os.getenv("PYTHONPATH"))
+
+
 
 # Initialize logging
 logger = setup_logging()

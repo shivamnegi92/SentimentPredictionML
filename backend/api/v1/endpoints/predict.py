@@ -2,9 +2,9 @@
 This module contains the API endpoints for making predictions.
 """
 from fastapi import APIRouter  # Import API router class from FastAPI
-from backend.services.inference import predict
-from backend.api.v1.schemas.prediction import PredictionRequest
-from backend.core.response import success_response
+from services.inference import predict
+from api.v1.schemas.prediction import PredictionRequest
+from core.response import success_response
 import logging
 
 # Initialize a router object

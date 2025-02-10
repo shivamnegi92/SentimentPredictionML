@@ -1,4 +1,4 @@
-from backend.models.sentiment_model import SentimentModel
+from models.sentiment_model import SentimentModel
 
 def test_model_loads_correctly():
     model = SentimentModel()

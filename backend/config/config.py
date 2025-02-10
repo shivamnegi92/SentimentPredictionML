@@ -3,10 +3,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Update paths to point to the directories
+# Update paths to point to the new directories
 MODEL_PATH = os.getenv("MODEL_PATH", 
-                       "backend/models_store/final_model")  # Path to the model directory
-TOKENIZER_PATH = os.getenv("TOKENIZER_PATH", 
-                           "backend/models_store/final_tokenizer")  # Path to the tokenizer directory
+                      "models_store/final_model")  # Removed 'backend/' prefix
 
-HF_MODEL_REPO = "Shivamnegi92/sentimentanalysisml"  # Replace with your repo name
+TOKENIZER_PATH = os.getenv("TOKENIZER_PATH", 
+                          "models_store/final_tokenizer")  # Removed 'backend/' prefix
+
+# HuggingFace repo without the subfolder paths
+HF_MODEL_REPO = "Shivamnegi92/sentimentanalysisml"

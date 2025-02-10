@@ -1,19 +1,22 @@
+# Use an official Python runtime as a parent image
 FROM python:3.9-slim
 
-# Set backend as the working directory
-WORKDIR /backend
+# Set the working directory inside the container
+WORKDIR /app
 
-# Copy only necessary files for better caching
-COPY backend/requirements.txt .
+# Copy only the requirements file first (for better caching)
+COPY requirements.txt .
 
 # Install dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --default-timeout=300 --no-cache-dir -r requirements.txt
+# Copy the entire backend directory contents into /app
+COPY . /app
 
-# Copy the entire backend folder
-COPY backend/ .
+WORKDIR /app
 
 # Expose FastAPI port
 EXPOSE 8000
 
-# Command to run FastAPI
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+# Command to run the application
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

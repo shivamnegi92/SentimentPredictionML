@@ -1,6 +1,6 @@
 import pytest
 
-from backend.services.inference import predict
+from services.inference import predict
 
 @pytest.mark.asyncio
 async def test_inference_service():  

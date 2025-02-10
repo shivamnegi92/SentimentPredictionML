@@ -1,5 +1,5 @@
 import pytest
-from backend.services.inference import batch_predict
+from services.inference import batch_predict
 
 @pytest.mark.asyncio
 async def test_batch_inference_service():
