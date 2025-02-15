@@ -1,52 +1,47 @@
-name: CI Pipeline
+name: CI Pipeline  # Name of the GitHub Actions workflow
 
 on:
   push:
     branches:
-      - main
+      - main  # Run the pipeline on every push to the main branch
   pull_request:
     branches:
-      - main
+      - main  # Run the pipeline on pull requests targeting the main branch
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Use the latest Ubuntu environment for execution
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4  # Updated to latest version
-
-      - name: Set up Python
-        uses: actions/setup-python@v4  # Updated to latest version
-        with:
-          python-version: '3.9'  # Use '3.9' instead of '3.9.21' for flexibility
+        uses: actions/checkout@v4  # Fetch the latest code from the repository
 
       - name: Install dependencies
         run: |
-          python -m venv venv
-          source venv/bin/activate
-          pip install --upgrade pip
-          pip install -r requirements.txt pytest flake8 safety  # Install required tools
+          python -m venv venv  # Create a virtual environment
+          source venv/bin/activate  # Activate the virtual environment
+          pip install --upgrade pip  # Upgrade pip to the latest version
+          pip install -r requirements.txt pytest flake8 safety  # Install required dependencies
 
       - name: Run tests
         run: |
-          source venv/bin/activate
-          pytest backend/tests
+          source venv/bin/activate  # Activate the virtual environment
+          pytest backend/tests  # Run all tests inside the backend/tests folder
 
       - name: Lint code
         run: |
-          source venv/bin/activate
-          flake8 .
+          source venv/bin/activate  # Activate the virtual environment
+          flake8 .  # Run Flake8 for linting
 
       - name: Check for security vulnerabilities
         run: |
-          source venv/bin/activate
-          safety check
+          source venv/bin/activate  # Activate the virtual environment
+          safety check  # Scan dependencies for known security vulnerabilities
 
       - name: Notify success
-        if: success()
+        if: success()  # Runs only if all steps succeed
         run: echo "✅ CI Pipeline executed successfully!"
 
       - name: Notify failure
-        if: failure()
+        if: failure()  # Runs only if any step fails
         run: echo "❌ CI Pipeline failed!"
