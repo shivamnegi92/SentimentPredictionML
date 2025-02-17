@@ -13,62 +13,48 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4  # Ensure latest version is used
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v2
         with:
-          python-version: '3.10'  # Use a stable version
-      
-      - name: Debug Python Path
-        run: echo "PYTHONPATH is $PYTHONPATH"
-      
-        
+          python-version: '3.x'
 
-
-        
-      - name: Cache dependencies
-        id: cache-dependencies
-        uses: actions/cache@v3
+      - name: Cache pip
+        uses: actions/cache@v2
         with:
-          path: venv  # Cache the virtual environment
-          key: venv-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
-            venv-${{ runner.os }}-
+            ${{ runner.os }}-pip-
 
-      - name: Install dependencies (if cache is not found)
-        if: steps.cache-dependencies.outputs.cache-hit != 'true'
+      - name: Install dependencies
         run: |
           python -m venv venv
           source venv/bin/activate
-          pip install --upgrade pip setuptools wheel
           pip install -r requirements.txt
-          pip install --upgrade fastapi starlette httpx
-
 
       - name: Run tests
-        working-directory: backend
         run: |
-          source ../venv/bin/activate
-          export PYTHONPATH="$PWD"
-          pytest tests --verbose --rootdir=.
-
+          source venv/bin/activate
+          pytest
 
       - name: Lint code
         run: |
           source venv/bin/activate
+          pip install flake8
           flake8 .
 
       - name: Check for security vulnerabilities
         run: |
           source venv/bin/activate
+          pip install safety
           safety check
 
       - name: Notify success
-        if: success()
-        run: echo "✅ CI Pipeline executed successfully!"
+        run: echo "CI Pipeline executed successfully!"
 
       - name: Notify failure
         if: failure()
-        run: echo "❌ CI Pipeline failed!"
+        run: echo "CI Pipeline failed!"
