@@ -1,3 +1,5 @@
 import sys
 import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__)))) 
+
+# Ensure backend directory is in sys.path
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../..")

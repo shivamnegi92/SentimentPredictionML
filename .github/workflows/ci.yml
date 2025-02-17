@@ -19,20 +19,41 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'  # Downgraded from 3.12 for better compatibility
+          python-version: '3.10'  # Use a stable version
+      
+      - name: Debug Python Path
+        run: echo "PYTHONPATH is $PYTHONPATH"
+      
+        
 
-      - name: Install dependencies
+
+        
+      - name: Cache dependencies
+        id: cache-dependencies
+        uses: actions/cache@v3
+        with:
+          path: venv  # Cache the virtual environment
+          key: venv-${{ runner.os }}-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            venv-${{ runner.os }}-
+
+      - name: Install dependencies (if cache is not found)
+        if: steps.cache-dependencies.outputs.cache-hit != 'true'
         run: |
           python -m venv venv
           source venv/bin/activate
-          pip install --upgrade pip setuptools wheel  # Ensure latest pip tools
-          pip install numpy==1.26.0  # Install NumPy first to prevent conflicts
-          pip install -r requirements.txt  # Install all other dependencies
+          pip install --upgrade pip setuptools wheel
+          pip install -r requirements.txt
+          pip install --upgrade fastapi starlette httpx
+
 
       - name: Run tests
+        working-directory: backend
         run: |
-          source venv/bin/activate
-          pytest backend/tests
+          source ../venv/bin/activate
+          export PYTHONPATH="$PWD"
+          pytest tests --verbose --rootdir=.
+
 
       - name: Lint code
         run: |
