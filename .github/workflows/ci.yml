@@ -45,4 +45,7 @@ jobs:
           pwd
           ls -l
           source venv/bin/activate  # Activate the virtual environment
+          export PYTHONPATH=$(pwd)  # Add backend directory to PYTHONPATH
+          echo "PYTHONPATH set to: $PYTHONPATH"
           pytest  # Run your tests
+  

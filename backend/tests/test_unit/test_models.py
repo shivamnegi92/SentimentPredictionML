@@ -1,4 +1,13 @@
+import sys
+import os
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, BASE_DIR)
+
 from models.sentiment_model import SentimentModel
+
+
+
 
 def test_model_loads_correctly():
     model = SentimentModel()

@@ -1,4 +1,11 @@
+import sys
+import os
 import pytest
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, BASE_DIR)
+
+
 from services.inference import batch_predict
 
 @pytest.mark.asyncio
