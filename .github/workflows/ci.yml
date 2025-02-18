@@ -23,7 +23,13 @@ jobs:
 
       - name: Install dependencies
         run: |
+          echo "Current directory before entering backend:"
+          pwd
+          ls -l
           cd backend  # Change to the backend directory
+          echo "Current directory inside backend before installing dependencies:"
+          pwd
+          ls -l
           python -m venv venv  # Create a virtual environment
           source venv/bin/activate  # Activate the virtual environment
           pip install --upgrade pip  # Upgrade pip
@@ -31,6 +37,12 @@ jobs:
 
       - name: Run tests
         run: |
+          echo "Current directory before running tests:"
+          pwd
+          ls -l
           cd backend  # Change to the backend directory
+          echo "Current directory inside backend before executing tests:"
+          pwd
+          ls -l
           source venv/bin/activate  # Activate the virtual environment
           pytest  # Run your tests
