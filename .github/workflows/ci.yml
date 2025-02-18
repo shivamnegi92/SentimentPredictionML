@@ -14,52 +14,64 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: '3.x'
+          python-version: '3.10'  # Set to a compatible version
 
-      - name: Upgrade pip
-        run: |
-          python -m venv venv
-          source venv/bin/activate
-          pip install --upgrade pip
-
-      - name: Cache pip dependencies
-        uses: actions/cache@v2
+      - name: Cache dependencies
+        uses: actions/cache@v3
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
 
+      - name: Debug Dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install --upgrade --force-reinstall pipdeptree
+          pipdeptree | grep torch || echo "No torch conflicts found."
+
       - name: Install dependencies
         run: |
-          source venv/bin/activate
-          pip install -r requirements.txt
+          python -m venv venv
+          . venv/bin/activate
+          python -m pip install --upgrade pip setuptools wheel
+          pip install torch torchvision torchaudio  # Install PyTorch separately
+          pip install --no-cache-dir -r requirements.txt
+
+      - name: Check installed packages
+        run: |
+          . venv/bin/activate
+          pip list
 
       - name: Run tests
-        run: |
-          source venv/bin/activate
-          pytest
+        run: venv/bin/python -m pytest
+        continue-on-error: false  # Stop if tests fail
 
       - name: Lint code
         run: |
-          source venv/bin/activate
-          pip install flake8
-          flake8 .
+          venv/bin/python -m pip install flake8
+          venv/bin/flake8 .
+        continue-on-error: false  # Stop execution on lint failure
 
       - name: Check for security vulnerabilities
         run: |
-          source venv/bin/activate
-          pip install safety
-          safety check
+          venv/bin/python -m pip install safety
+          venv/bin/safety check
+        continue-on-error: false  # Stop execution if security issues are found
+
+      - name: Debug Exit Code
+        if: failure()
+        run: echo "🚨 CI Pipeline failed with exit code: $?"
 
       - name: Notify success
-        run: echo "CI Pipeline executed successfully!"
+        if: success()
+        run: echo "✅ CI Pipeline executed successfully!"
 
       - name: Notify failure
         if: failure()
-        run: echo "CI Pipeline failed!"
+        run: echo "❌ CI Pipeline failed!"
