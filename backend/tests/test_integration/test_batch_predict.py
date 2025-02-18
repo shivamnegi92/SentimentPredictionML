@@ -1,5 +1,12 @@
+import sys
+import os
 import pytest
-from backend.services.inference import batch_predict
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, BASE_DIR)
+
+
+from services.inference import batch_predict
 
 @pytest.mark.asyncio
 async def test_batch_inference_service():
@@ -8,4 +15,3 @@ async def test_batch_inference_service():
     assert len(results) == len(texts), "Results should match input size"
     for result in results:
         assert result in ["0", "1"], "Each prediction should be 0 or 1"
-

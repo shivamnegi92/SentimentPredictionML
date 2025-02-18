@@ -1,8 +1,8 @@
 # backend/api/v1/endpoints/batch_predict.py
 from fastapi import APIRouter
-from backend.services.inference import batch_predict
-from backend.api.v1.schemas.prediction import PredictionRequest
-from backend.core.response import success_response, error_response
+from services.inference import batch_predict
+from api.v1.schemas.prediction import PredictionRequest
+from core.response import success_response, error_response
 from typing import List
 
 router = APIRouter()

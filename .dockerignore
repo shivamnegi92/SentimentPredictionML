@@ -1,0 +1,21 @@
+# Ignore MLflow experiment tracking and model storage
+mlruns/
+models_store/
+
+# Ignore environment files
+.env
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+
+# Ignore virtual environments
+venv/
+*.egg-info/
+*.eggs/
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
