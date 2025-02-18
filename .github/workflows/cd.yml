@@ -36,9 +36,18 @@ jobs:
 
       - name: Run tests
         run: |
-          cd backend
-          source venv/bin/activate
-          pytest
+          echo "Current directory before running tests:"
+          pwd
+          ls -l
+          cd backend  # Change to the backend directory
+          echo "Current directory inside backend before executing tests:"
+          pwd
+          ls -l
+          source venv/bin/activate  # Activate the virtual environment
+          export PYTHONPATH=$(pwd)  # Add backend directory to PYTHONPATH
+          echo "PYTHONPATH set to: $PYTHONPATH"
+          pytest  # Run your tests
+  
 
       - name: Deploy FastAPI App
         env:
