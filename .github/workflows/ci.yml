@@ -21,6 +21,12 @@ jobs:
         with:
           python-version: '3.x'
 
+      - name: Upgrade pip
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install --upgrade pip
+
       - name: Cache pip dependencies
         uses: actions/cache@v2
         with:
@@ -31,7 +37,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m venv venv
           source venv/bin/activate
           pip install -r requirements.txt
 
