@@ -14,59 +14,47 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v2
         with:
-          python-version: '3.10'  # Set to a compatible version for PyTorch
+          python-version: '3.x'
 
-      - name: Cache dependencies
-        uses: actions/cache@v3
+      - name: Cache pip dependencies
+        uses: actions/cache@v2
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-pip-
-
-      - name: Debug Dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pipdeptree
-          pipdeptree | grep torch  # Check dependency tree for torch conflicts
 
       - name: Install dependencies
         run: |
           python -m venv venv
           source venv/bin/activate
-          python -m pip install --upgrade pip
-          pip install --no-cache-dir torch==2.5.1  # Install a valid PyTorch version
-          pip install -r requirements.txt --no-cache-dir  # Install other dependencies
+          pip install -r requirements.txt
 
       - name: Run tests
         run: |
           source venv/bin/activate
           pytest
-        continue-on-error: false  # Stop if tests fail
 
       - name: Lint code
         run: |
           source venv/bin/activate
           pip install flake8
           flake8 .
-        continue-on-error: false  # Stop execution on lint failure
 
       - name: Check for security vulnerabilities
         run: |
           source venv/bin/activate
           pip install safety
           safety check
-        continue-on-error: false  # Stop execution if security issues are found
 
       - name: Notify success
-        if: success()
-        run: echo "✅ CI Pipeline executed successfully!"
+        run: echo "CI Pipeline executed successfully!"
 
       - name: Notify failure
         if: failure()
-        run: echo "❌ CI Pipeline failed!"
+        run: echo "CI Pipeline failed!"
