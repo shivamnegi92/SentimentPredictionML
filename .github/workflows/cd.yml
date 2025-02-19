@@ -3,47 +3,52 @@ name: CD Pipeline
 on:
   push:
     branches:
-      - main  # Trigger when changes are pushed to the main branch
+      - main  # Trigger the workflow when changes are pushed to the main branch
 
 jobs:
   deploy:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-22.04  # Use the latest stable Ubuntu runner
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+      - name: Checkout Code
+        uses: actions/checkout@v2  # Fetch the latest code from the repository
 
-      - name: Set up Python 3.10
+      - name: Set Up Python 3.10
         uses: actions/setup-python@v4
         with:
           python-version: "3.10"
       
-      - name: Verify Python version
+      - name: Verify Python Version
         run: python --version
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: |
           cd backend
-          python -m venv venv
-          source venv/bin/activate && exec bash  # Persist the virtual environment
+          python -m venv venv  # Create a virtual environment
+          source venv/bin/activate  # Activate the virtual environment
           pip install --upgrade pip
           pip install --no-cache-dir -r requirements.txt
-          pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu  # Install torch only
+          pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu  # Install only CPU version of PyTorch
 
-      - name: Run tests
+      - name: Run Tests
         run: |
           cd backend
-          source venv/bin/activate && exec bash
+          source venv/bin/activate
           export PYTHONPATH=$(pwd)
-          pytest  # Run tests
+          pytest  # Run unit tests
 
-      - name: Free up disk space
+      - name: Free Up Disk Space
         run: |
           sudo rm -rf /usr/local/lib/android
           sudo apt-get clean
           sudo rm -rf /var/lib/apt/lists/*
           docker image prune -af  # Remove unused Docker images
-          df -h  # Show free space after cleanup
+          df -h  # Display free disk space
+
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
 
       - name: Deploy FastAPI App
         env:
@@ -57,6 +62,6 @@ jobs:
           docker build --no-cache -t fastapi-app .
           docker-compose up -d  # Start FastAPI in detached mode
 
-      - name: Notify result
+      - name: Notify Result
         if: success()
         run: echo "Deployment successful!" || echo "Deployment failed!"
