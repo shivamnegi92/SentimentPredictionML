@@ -9,7 +9,6 @@ jobs:
   deploy:
     runs-on: ubuntu-22.04
 
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -19,44 +18,32 @@ jobs:
         with:
           python-version: "3.10"
       
-      - name: Force update Python
-        run: sudo apt update && sudo apt install python3.10 -y
-     
       - name: Verify Python version
         run: python --version
-
-
 
       - name: Install dependencies
         run: |
           cd backend
           python -m venv venv
-          source venv/bin/activate
+          source venv/bin/activate && exec bash  # Persist the virtual environment
           pip install --upgrade pip
-          pip install -r requirements.txt
+          pip install --no-cache-dir -r requirements.txt
+          pip install --no-cache-dir torch --index-url https://download.pytorch.org/whl/cpu  # Install torch only
 
       - name: Run tests
         run: |
-          echo "Current directory before running tests:"
-          pwd
-          ls -l
-          cd backend  # Change to the backend directory
-          echo "Current directory inside backend before executing tests:"
-          pwd
-          ls -l
-          source venv/bin/activate  # Activate the virtual environment
-          export PYTHONPATH=$(pwd)  # Add backend directory to PYTHONPATH
-          echo "PYTHONPATH set to: $PYTHONPATH"
-          pytest  # Run your tests
-  
+          cd backend
+          source venv/bin/activate && exec bash
+          export PYTHONPATH=$(pwd)
+          pytest  # Run tests
+
       - name: Free up disk space
         run: |
           sudo rm -rf /usr/local/lib/android
           sudo apt-get clean
           sudo rm -rf /var/lib/apt/lists/*
+          docker image prune -af  # Remove unused Docker images
           df -h  # Show free space after cleanup
-  
-           
 
       - name: Deploy FastAPI App
         env:
@@ -67,11 +54,9 @@ jobs:
           cd backend
           model_uri="models:/${MLFLOW_MODEL_NAME}/${MLFLOW_MODEL_VERSION}"
           echo "Deploying model from ${model_uri} to FastAPI service"
-
-          docker build -t fastapi-app .
+          docker build --no-cache -t fastapi-app .
           docker-compose up -d  # Start FastAPI in detached mode
 
       - name: Notify result
         if: success()
         run: echo "Deployment successful!" || echo "Deployment failed!"
-        
