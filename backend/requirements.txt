@@ -1,5 +1,4 @@
 
-torch==2.0.1+cpu  # CPU version
 fastapi
 uvicorn
 pydantic
