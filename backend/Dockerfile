@@ -7,8 +7,9 @@ WORKDIR /app
 # Copy only the requirements file first (for better caching)
 COPY requirements.txt .
 
-# Install dependencies
-RUN pip install --default-timeout=300 --no-cache-dir -r requirements.txt
+# Upgrade pip and install dependencies with --no-cache-dir
+RUN pip install --upgrade pip && \
+    pip install --default-timeout=300 --no-cache-dir -r requirements.txt
 # Copy the entire backend directory contents into /app
 COPY . /app
 
